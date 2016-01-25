@@ -48,11 +48,18 @@ labels and which columns contain data to be retrieved and condensed.
 Returns dictionary with lavels as keys and data as values in a list
 '''
 
-    first_names = data_array[:, first_name_number]
-    last_names = data_array[:, last_name_number]
-    
+    first_names = list(data_array[:, first_name_number])
+    last_names = list(data_array[:, last_name_number])
+    urls = data_array[:, data_number_start:(data_number_end+1)]
 
-    for i, first_name in 
+    #candidates must all have unique last names for this to work
+
+    for i, last_name in last_names:
+        name_key = last_name
+        if name_key not in data_dict:
+            data_dict[name_key] = {"first name" : first_names[i], "last name" : last_names[i], "issue urls" : set(urls[:, i])}
+        else:
+            data_dict[name_key]["issue urls"].update(set(urls[:, i]))
 
     
 
