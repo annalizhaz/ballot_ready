@@ -80,10 +80,12 @@ def write_new(data_dict, write_to):
     with open(write_to, 'w') as csvfile:
         mywriter = csv.writer(csvfile, dialect='excel')
 
+        mywriter.writerow(["issue_stance_url", "first_name", "last_name"])
+
         for key in data_dict:
             for url in data_dict[key]["issue urls"]:
                 if url != "{}":
-                    mywriter.writerow([data_dict[key]["last name"], data_dict[key]["first name"], url])
+                    mywriter.writerow([url, data_dict[key]["first name"], data_dict[key]["last name"]])
 
 
 def go(filename, first_name_column, last_name_column, data_column_start, data_column_end, write_to):
