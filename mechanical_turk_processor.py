@@ -1,6 +1,7 @@
 import csv
 import numpy as np
 import string
+import sys
 
 def read_csv(filename):
 
@@ -20,7 +21,6 @@ def read_csv(filename):
             empty_rows_removed.append(row)
 
     data_array = np.array(empty_rows_removed[1:]) #removes header row
-    print(data_array.shape)
     return data_array
 
 def column_to_number(alpha_column):
@@ -63,7 +63,6 @@ def fetch_data(data_array, data_dict, first_name_number, last_name_number, data_
         else:
             data_dict[name_key]["issue urls"].update(set(urls[:, i]))
 
-    print(data_dict)
 
 def write_new(data_dict, write_to):
     '''
@@ -93,3 +92,25 @@ def go(filename, first_name_column, last_name_column, data_column_start, data_co
     fetch_data(data_array, data_dict, first_name_number, last_name_number, data_number_start, data_number_end)
 
     write_new(data_dict, write_to)
+
+if __name__ == "__main__":
+    usage = "python3 mechanical_turk_processor.py <'first name column'> \
+    <'last name column'> <'data start column'> <'data end column'> <'new file path'>"
+    args_len = len(sys.argv)
+    if args_len != 7:
+        raise ValueError("Incorrect number of arguments provided")
+        print(usage)
+        sys.exit(0)
+    else:
+
+        filename = sys.argv[1]
+        first_name_column = sys.argv[2]
+        last_name_column = sys.argv[3]
+        data_column_start = sys.argv[4]
+        data_column_end = sys.argv[5]
+        write_to = sys.argv[6]
+
+        go(filename, first_name_column, last_name_column, data_column_start, data_column_end, write_to)
+
+        print(usage)    
+        sys.exit(0)
