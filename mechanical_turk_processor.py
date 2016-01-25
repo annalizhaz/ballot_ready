@@ -66,6 +66,16 @@ def fetch_data(data_array, data_dict, first_name_number, last_name_number, data_
 
 def write_new(data_dict, write_to):
     '''
+    Takes filled in dictionary and filepath for new file
+
+    Writes csv to new file location with data from dictionary in the format:
+
+    last name , first name, url
+    last name, first name, url
+
+    One url per row
+    Names repeat for as many urls as they are associated with
+    
     '''
     with open(write_to, 'w') as csvfile:
         mywriter = csv.writer(csvfile, dialect='excel')
@@ -94,7 +104,7 @@ def go(filename, first_name_column, last_name_column, data_column_start, data_co
     write_new(data_dict, write_to)
 
 if __name__ == "__main__":
-    usage = "python3 mechanical_turk_processor.py <'first name column'> \
+    usage = "python3 mechanical_turk_processor.py <'read from file'> <'first name column'>\
     <'last name column'> <'data start column'> <'data end column'> <'new file path'>"
     args_len = len(sys.argv)
     if args_len != 7:
