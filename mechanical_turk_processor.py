@@ -41,7 +41,7 @@ def column_to_number(alpha_column):
 
     return num
 
-def fetch_data(data_array, data_dict, first_name_number, last_name_number, data_number_start, data_number_end):
+def fetch_data(data_array, data_dict, first_name_number, last_name_number, data_number_start, data_number_end, uniq_id_number):
 
     '''
     Takes numpy array, empty dictionary, and parameters for which columns contain
@@ -52,16 +52,14 @@ def fetch_data(data_array, data_dict, first_name_number, last_name_number, data_
 
     first_names = list(data_array[:, (first_name_number - 1)])
     last_names = list(data_array[:, (last_name_number - 1)])
+    uniq_ids = list(data_array[:, (uniq_id_number - 1)])
     urls = data_array[:, (data_number_start - 1):(data_number_end)]
 
-    #candidates must all have unique last names for this to work
-
-    for i, last_name in enumerate(last_names):
-        name_key = last_name
+    for i, name_key in enumerate(uniq_ids):
         if name_key not in data_dict:
-            data_dict[name_key] = {"first name" : first_names[i], "last name" : last_names[i], "issue urls" : set(urls[:, i])}
+            data_dict[name_key] = {"first name" : first_names[i], "last name" : last_names[i], "issue urls" : set(urls[i, :])}
         else:
-            data_dict[name_key]["issue urls"].update(set(urls[:, i]))
+            data_dict[name_key]["issue urls"].update(set(urls[i, :]))
 
 
 def write_new(data_dict, write_to):
@@ -88,7 +86,7 @@ def write_new(data_dict, write_to):
                     mywriter.writerow([url, data_dict[key]["first name"], data_dict[key]["last name"]])
 
 
-def go(filename, first_name_column, last_name_column, data_column_start, data_column_end, write_to):
+def go(filename, first_name_column, last_name_column, data_column_start, data_column_end, write_to, uniq_id):
     '''
 
     '''
@@ -100,8 +98,9 @@ def go(filename, first_name_column, last_name_column, data_column_start, data_co
     last_name_number = column_to_number(last_name_column)
     data_number_start = column_to_number(data_column_start)
     data_number_end = column_to_number(data_column_end)
+    uniq_id_number = column_to_number(uniq_id)
 
-    fetch_data(data_array, data_dict, first_name_number, last_name_number, data_number_start, data_number_end)
+    fetch_data(data_array, data_dict, first_name_number, last_name_number, data_number_start, data_number_end, uniq_id_number)
 
     write_new(data_dict, write_to)
 
@@ -109,7 +108,7 @@ if __name__ == "__main__":
     usage = "python3 mechanical_turk_processor.py <'read from file'> <'first name column'>\
     <'last name column'> <'data start column'> <'data end column'> <'new file path'>"
     args_len = len(sys.argv)
-    if args_len != 7:
+    if args_len != 8:
         raise ValueError("Incorrect number of arguments provided")
         print(usage)
         sys.exit(0)
@@ -121,8 +120,9 @@ if __name__ == "__main__":
         data_column_start = sys.argv[4]
         data_column_end = sys.argv[5]
         write_to = sys.argv[6]
+        uniq_id = sys.argv[7]
 
-        go(filename, first_name_column, last_name_column, data_column_start, data_column_end, write_to)
+        go(filename, first_name_column, last_name_column, data_column_start, data_column_end, write_to, uniq_id)
 
         print(usage)    
         sys.exit(0)
