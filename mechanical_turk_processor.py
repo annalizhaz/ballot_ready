@@ -16,7 +16,11 @@ def read_csv(filename):
 
     empty_rows_removed = []
 
+<<<<<<< HEAD
     for row in data_in_lists:
+=======
+    for row in enumerate(data_in_lists):
+>>>>>>> 5c170a58c43dca5f2eb80ffb3fffc5cdd81d160b
         if len(row) != 0:
             empty_rows_removed.append(row)
 
